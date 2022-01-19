@@ -1,56 +1,45 @@
 /* eslint-disable */
 var webpack = require('webpack');
+const path = require('path');
+
 
 module.exports = {
-  debug: true,
+  mode: 'production',
   devtool: 'source-map',
   entry: {
     app: __dirname + '/index.js'
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'babel',
-        query: {
-          plugins: [
-            ['react-transform', {
-              transforms: [{
-                transform: 'react-transform-hmr',
-                imports: ['react'],
-                locals: ['module']
-              }]
-            }]
-          ]
-        }
+        use: 'babel-loader'
       },
     ]
   },
   output: {
-    path: __dirname + '/build/',
+    path: path.join(__dirname, 'build'),
     filename: '[name].js',
     publicPath: 'http://localhost:8000/build'
   },
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
-        'NODE_ENV': '"development"'
+        'NODE_ENV': '"production"'
       }
-    }),
-    new webpack.NoErrorsPlugin(),
-    new webpack.HotModuleReplacementPlugin()
+    })
   ],
   devServer: {
-    colors: true,
-    contentBase: __dirname,
     historyApiFallback: true,
+    static: {
+      directory: path.join(__dirname)
+    },
+    allowedHosts: 'auto',
+    client: {
+      progress: true
+    },
     hot: true,
-    inline: true,
-    port: 8000,
-    progress: true,
-    stats: {
-      cached: false
-    }
+    port: 8000
   }
 };
